@@ -151,7 +151,7 @@ func (tr *SplayTree) Next(d *node) *node {
 	var successor *node
 	if d.right != nil {
 		successor = d.right
-		if successor.left != nil { // check: for loop?
+		for successor.left != nil {
 			successor = successor.left
 		}
 		return successor
@@ -175,7 +175,7 @@ func (tr *SplayTree) Prev(d *node) *node {
 	var predecessor *node
 	if d.left != nil {
 		predecessor = d.left
-		if predecessor.right != nil { // check: for loop?
+		for predecessor.right != nil {
 			predecessor = predecessor.right
 		}
 		return predecessor
