@@ -1,14 +1,14 @@
 package splaytree
 
 type SplayTree struct {
-	root       *node
+	root       *Node
 	size       int
 	comparator func(a, b interface{}) int
 }
 
-type node struct {
+type Node struct {
 	item        interface{}
-	left, right *node
+	left, right *Node
 }
 
 func New(less func(a, b interface{}) int) *SplayTree {
@@ -17,14 +17,14 @@ func New(less func(a, b interface{}) int) *SplayTree {
 	}
 }
 
-func (tr *SplayTree) Insert(item interface{}) *node {
+func (tr *SplayTree) Insert(item interface{}) *Node {
 	tr.size++
 	tr.root = insert(item, tr.root, tr.comparator)
 	return tr.root
 }
 
-func (tr *SplayTree) Add(item interface{}) *node {
-	n := new(node)
+func (tr *SplayTree) Add(item interface{}) *Node {
+	n := new(Node)
 	if tr.root == nil {
 		n.left = nil
 		n.right = nil
@@ -57,16 +57,16 @@ func (tr *SplayTree) Remove(item interface{}) {
 
 func (tr *SplayTree) remove(
 	i interface{},
-	t *node,
+	t *Node,
 	comparator func(a, b interface{}) int,
-) *node {
+) *Node {
 	if t == nil {
 		return nil
 	}
 	t = splay(i, t, comparator)
 	cmp := comparator(i, t.item)
 	if cmp == 0 {
-		var x *node
+		var x *Node
 		if t.left == nil {
 			x = t.right
 		} else {
@@ -94,7 +94,7 @@ func (tr *SplayTree) Pop() interface{} {
 
 // func (tr *SplayTree) FindStatic() {}
 
-func (tr *SplayTree) Find(item interface{}) *node {
+func (tr *SplayTree) Find(item interface{}) *Node {
 	if tr.root != nil {
 		tr.root = splay(item, tr.root, tr.comparator)
 		if tr.comparator(item, tr.root.item) != 0 {
@@ -124,7 +124,7 @@ func (tr *SplayTree) Max() interface{} {
 	return tr.MaxNode(tr.root).item
 }
 
-func (tr *SplayTree) MinNode(t *node) *node {
+func (tr *SplayTree) MinNode(t *Node) *Node {
 	if t == nil {
 		t = tr.root
 	}
@@ -134,7 +134,7 @@ func (tr *SplayTree) MinNode(t *node) *node {
 	return t
 }
 
-func (tr *SplayTree) MaxNode(t *node) *node {
+func (tr *SplayTree) MaxNode(t *Node) *Node {
 	if t == nil {
 		t = tr.root
 	}
@@ -146,9 +146,9 @@ func (tr *SplayTree) MaxNode(t *node) *node {
 
 // func (tr *SplayTree) At() {}
 
-func (tr *SplayTree) Next(d *node) *node {
+func (tr *SplayTree) Next(d *Node) *Node {
 	root := tr.root
-	var successor *node
+	var successor *Node
 	if d.right != nil {
 		successor = d.right
 		for successor.left != nil {
@@ -170,9 +170,9 @@ func (tr *SplayTree) Next(d *node) *node {
 	return successor
 }
 
-func (tr *SplayTree) Prev(d *node) *node {
+func (tr *SplayTree) Prev(d *Node) *Node {
 	root := tr.root
-	var predecessor *node
+	var predecessor *Node
 	if d.left != nil {
 		predecessor = d.left
 		for predecessor.right != nil {
@@ -210,17 +210,17 @@ func (tr *SplayTree) Size() int {
 // func (tr *SplayTree) Update() {}
 // func (tr *SplayTree) Split() {}
 
-func (n *node) Item() interface{} {
+func (n *Node) Item() interface{} {
 	return n.item
 }
 
 func insert(
 	i interface{},
-	t *node,
+	t *Node,
 	comparator func(a, b interface{}) int,
-) *node {
+) *Node {
 
-	n := &node{item: i}
+	n := &Node{item: i}
 
 	if t == nil {
 		n.left, n.right = nil, nil
@@ -243,10 +243,10 @@ func insert(
 
 func splay(
 	i interface{},
-	t *node,
+	t *Node,
 	comparator func(a, b interface{}) int,
-) *node {
-	n := new(node)
+) *Node {
+	n := new(Node)
 	l := n
 	r := n
 	for {
