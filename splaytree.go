@@ -210,6 +210,10 @@ func (tr *SplayTree) Size() int {
 // func (tr *SplayTree) Update() {}
 // func (tr *SplayTree) Split() {}
 
+func (n *node) Item() interface{} {
+	return n.item
+}
+
 func insert(
 	i interface{},
 	t *node,
