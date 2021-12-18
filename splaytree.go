@@ -1,5 +1,8 @@
 package splaytree
 
+// Follows "An implementation of top-down splaying"
+// by D. Sleator <sleator@cs.cmu.edu> March 1992
+
 type SplayTree struct {
 	root       *Node
 	size       int
@@ -17,12 +20,14 @@ func New(less func(a, b interface{}) int) *SplayTree {
 	}
 }
 
+// Insert a key, allows duplicates
 func (tr *SplayTree) Insert(item interface{}) *Node {
 	tr.size++
 	tr.root = insert(item, tr.root, tr.comparator)
 	return tr.root
 }
 
+// Add a key, if it is not present in the tree
 func (tr *SplayTree) Add(item interface{}) *Node {
 	n := new(Node)
 	if tr.root == nil {
@@ -51,6 +56,7 @@ func (tr *SplayTree) Add(item interface{}) *Node {
 	return tr.root
 }
 
+// Remove i from the tree if it's there
 func (tr *SplayTree) Remove(item interface{}) {
 	tr.root = tr.remove(item, tr.root, tr.comparator)
 }
@@ -79,6 +85,7 @@ func (tr *SplayTree) remove(
 	return t
 }
 
+// Pop removes and returns the node with smallest key
 func (tr *SplayTree) Pop() interface{} {
 	n := tr.root
 	if n == nil {
@@ -92,6 +99,7 @@ func (tr *SplayTree) Pop() interface{} {
 	return n.item
 }
 
+// FindStatic finds without splaying
 // func (tr *SplayTree) FindStatic() {}
 
 func (tr *SplayTree) Find(item interface{}) *Node {
@@ -104,7 +112,21 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 	return tr.root
 }
 
-// func (tr *SplayTree) Contains() {}
+func (tr *SplayTree) Contains(item interface{}) bool {
+	current := tr.root
+	for current != nil {
+		cmp := tr.comparator(item, current.Item())
+		if cmp == 0 {
+			return true
+		} else if cmp < 0 {
+			current = current.left
+		} else {
+			current = current.right
+		}
+	}
+	return false
+}
+
 // func (tr *SplayTree) ForEach() {}
 // func (tr *SplayTree) Range() {}
 // func (tr *SplayTree) Keys() {}
@@ -144,6 +166,7 @@ func (tr *SplayTree) MaxNode(t *Node) *Node {
 	return t
 }
 
+// At returns node at given index
 // func (tr *SplayTree) At() {}
 
 func (tr *SplayTree) Next(d *Node) *Node {
@@ -198,7 +221,10 @@ func (tr *SplayTree) Prev(d *Node) *Node {
 // func (tr *SplayTree) Clear() {}
 // func (tr *SplayTree) ToList() {}
 // func (tr *SplayTree) Load() {}
-// func (tr *SplayTree) IsEmpty() {}
+
+func (tr *SplayTree) IsEmpty() bool {
+	return tr.root == nil
+}
 
 func (tr *SplayTree) Size() int {
 	return tr.size
@@ -241,6 +267,7 @@ func insert(
 	return n
 }
 
+// Simple top down splay, not requiring i to be in the tree t.
 func splay(
 	i interface{},
 	t *Node,
@@ -256,7 +283,7 @@ func splay(
 				break
 			}
 			if comparator(i, t.left.item) < 0 {
-				y := t.left
+				y := t.left // rotate right
 				t.left = y.right
 				y.right = t
 				t = y
@@ -264,7 +291,7 @@ func splay(
 					break
 				}
 			}
-			r.left = t
+			r.left = t // link right
 			r = t
 			t = t.left
 		} else if cmp > 0 {
@@ -272,7 +299,7 @@ func splay(
 				break
 			}
 			if comparator(i, t.right.item) > 0 {
-				y := t.right
+				y := t.right // rotate left
 				t.right = y.left
 				y.left = t
 				t = y
@@ -280,13 +307,14 @@ func splay(
 					break
 				}
 			}
-			l.right = t
+			l.right = t // link left
 			l = t
 			t = t.right
 		} else {
 			break
 		}
 	}
+	// assemble
 	l.right = t.left
 	r.left = t.right
 	t.left = n.right

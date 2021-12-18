@@ -14,7 +14,7 @@ At the moment, this library is only intended to support the development of a pur
 * [X] Pop
 * [ ] FindStatic
 * [X] Find
-* [ ] Contains
+* [X] Contains
 * [ ] ForEach
 * [ ] Range
 * [ ] Keys
@@ -29,7 +29,7 @@ At the moment, this library is only intended to support the development of a pur
 * [ ] Clear
 * [ ] ToList
 * [ ] Load
-* [ ] IsEmpty
+* [X] IsEmpty
 * [X] Size
 * [ ] Root
 * [ ] ToString
