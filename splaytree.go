@@ -29,7 +29,7 @@ func (tr *SplayTree) Insert(item interface{}) *Node {
 
 // Add a key, if it is not present in the tree
 func (tr *SplayTree) Add(item interface{}) *Node {
-	n := new(Node)
+	n := &Node{item: item}
 	if tr.root == nil {
 		n.left = nil
 		n.right = nil
@@ -127,9 +127,40 @@ func (tr *SplayTree) Contains(item interface{}) bool {
 	return false
 }
 
-// func (tr *SplayTree) ForEach() {}
+func (tr *SplayTree) ForEach(visitor func(item interface{})) {
+	current := tr.root
+	Q := []*Node{}
+	done := false
+
+	for !done {
+		if current != nil {
+			Q = append(Q, current)
+			current = current.left
+		} else {
+			if len(Q) != 0 {
+				current = Q[len(Q)-1]
+				Q = Q[:len(Q)-1]
+				visitor(current.Item())
+				current = current.right
+			} else {
+				done = true
+			}
+		}
+	}
+}
+
 // func (tr *SplayTree) Range() {}
 // func (tr *SplayTree) Keys() {}
+
+func (tr *SplayTree) Items() []interface{} {
+	items := &[]interface{}{}
+	visitor := func(item interface{}) {
+		*items = append(*items, item)
+	}
+	tr.ForEach(visitor)
+	return *items
+}
+
 // func (tr *SplayTree) Values() {}
 
 func (tr *SplayTree) Min() interface{} {

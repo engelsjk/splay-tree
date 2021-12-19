@@ -23,16 +23,66 @@ func less(a, b interface{}) int {
 	return 0
 }
 
+func equal(a []interface{}, b []float64) bool {
+	for i := 0; i < len(a); i++ {
+		v, ok := a[i].(float64)
+		if !ok {
+			return false
+		}
+		if b[i] != v {
+			return false
+		}
+	}
+	return true
+}
+
+func TestInsert(t *testing.T) {
+	var tree *SplayTree
+
+	// should return the size of the tree
+	tree = New(less)
+	tree.Insert(1.0)
+	tree.Insert(2.0)
+	tree.Insert(3.0)
+	tree.Insert(4.0)
+	tree.Insert(5.0)
+	expect(t, tree.Size() == 5)
+
+	// should return the pointer
+	tree = New(less)
+	n1 := tree.Insert(1.0)
+	n2 := tree.Insert(2.0)
+	n3 := tree.Insert(3.0)
+	expect(t, n1.Item().(float64) == 1.0)
+	expect(t, n2.Item().(float64) == 2.0)
+	expect(t, n3.Item().(float64) == 3.0)
+}
+
 func TestDuplicate(t *testing.T) {
 
 	var tree *SplayTree
 	var values []float64
 	var size int
 
-	// TODO: should allow inserting of duplicate key
-	// TODO: should allow multiple duplicate keys in a row
+	// should allow inserting of duplicate key
+	tree = New(less)
+	values = []float64{2, 12, 1, -6, 1}
+	for _, v := range values {
+		tree.Insert(v)
+	}
+	expect(t, equal(tree.Items(), []float64{-6, 1, 1, 2, 12}))
+	expect(t, tree.Size() == 5)
 
-	// TODO: should remove from a tree with duplicate keys correctly
+	// should allow multiple duplicate keys in a row
+	tree = New(less)
+	values = []float64{2, 12, 1, 1, -6, 2, 1, 1, 13}
+	for _, v := range values {
+		tree.Insert(v)
+	}
+	expect(t, equal(tree.Items(), []float64{-6, 1, 1, 1, 1, 2, 2, 12, 13}))
+	expect(t, tree.Size() == 9)
+
+	// should remove from a tree with duplicate keys correctly
 	tree = New(less)
 	values = []float64{2, 12, 1, 1, -6, 1, 1}
 	for _, v := range values {
@@ -61,7 +111,14 @@ func TestDuplicate(t *testing.T) {
 		expect(t, tree.Size() == size)
 	}
 
-	// TODO: should disallow duplicates if noDuplicates is set
+	// should disallow duplicates if noDuplicates is set
+	tree = New(less)
+	values = []float64{2, 12, 1, -6, 1}
+	for _, v := range values {
+		tree.Add(v)
+	}
+	expect(t, equal(tree.Items(), []float64{-6, 1, 2, 12}))
+	expect(t, tree.Size() == 4)
 
 	// should add only if the key is not there
 	tree = New(less)

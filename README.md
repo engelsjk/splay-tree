@@ -35,3 +35,19 @@ At the moment, this library is only intended to support the development of a pur
 * [ ] ToString
 * [ ] Update
 * [ ] Split
+
+## Tests
+
+* [ ] Bulk
+* [ ] Compare
+* [ ] Contains
+* [X] Duplicate
+* [ ] Empty
+* [ ] Find
+* [X] Insert
+* [ ] Keys-Values
+* [ ] Min-Max
+* [ ] Print
+* [ ] Remove
+* [ ] Traversal
+* [ ] Update
