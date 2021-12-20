@@ -86,17 +86,17 @@ func (tr *SplayTree) remove(
 }
 
 // Pop removes and returns the node with smallest key
-func (tr *SplayTree) Pop() interface{} {
+func (tr *SplayTree) Pop() *Node {
 	n := tr.root
 	if n == nil {
 		return nil
 	}
-	if n.left != nil { // check: for loop?
+	for n.left != nil {
 		n = n.left
 	}
 	tr.root = splay(n.item, tr.root, tr.comparator)
 	tr.root = tr.remove(n.item, tr.root, tr.comparator)
-	return n.item
+	return n
 }
 
 // FindStatic finds without splaying
