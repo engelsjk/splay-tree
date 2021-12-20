@@ -277,25 +277,25 @@ func insert(
 	comparator func(a, b interface{}) int,
 ) *Node {
 
-	n := &Node{item: i}
+	node := &Node{item: i}
 
 	if t == nil {
-		n.left, n.right = nil, nil
-		return n
+		node.left, node.right = nil, nil
+		return node
 	}
 
 	t = splay(i, t, comparator)
 	cmp := comparator(i, t.item)
 	if cmp < 0 {
-		n.left = t.left
-		n.right = t
+		node.left = t.left
+		node.right = t
 		t.left = nil
 	} else if cmp >= 0 {
-		n.right = t.right
-		n.left = t
+		node.right = t.right
+		node.left = t
 		t.right = nil
 	}
-	return n
+	return node
 }
 
 // Simple top down splay, not requiring i to be in the tree t.
