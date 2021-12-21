@@ -30,10 +30,10 @@ func main() {
 	t.Insert(&Item{33})
 	t.Insert(&Item{2})
 	t.Insert(&Item{4})
+	t.Add(&Item{4})
+	t.Insert(&Item{4})
+	t.Add(&Item{10})
 
-	for _, item := range t.Items() {
-		fmt.Println(item)
-	}
 	for _, node := range t.Nodes() {
 		fmt.Printf("(%p) %+v: %+v\n", node, node, node.Item())
 	}
