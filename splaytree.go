@@ -66,13 +66,13 @@ func (tr *SplayTree) remove(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
+	var x *Node
 	if t == nil {
 		return nil
 	}
 	t = splay(i, t, comparator)
 	cmp := comparator(i, t.item)
 	if cmp == 0 {
-		var x *Node
 		if t.left == nil {
 			x = t.right
 		} else {
