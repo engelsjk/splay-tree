@@ -203,13 +203,17 @@ func (tr *SplayTree) MaxNode(t *Node) *Node {
 func (tr *SplayTree) Next(d *Node) *Node {
 	root := tr.root
 	var successor *Node
-	if d.right != nil {
-		successor = d.right
-		for successor.left != nil {
-			successor = successor.left
+
+	if d != nil {
+		if d.right != nil {
+			successor = d.right
+			for successor.left != nil {
+				successor = successor.left
+			}
+			return successor
 		}
-		return successor
 	}
+
 	for root != nil {
 		cmp := tr.comparator(d.item, root.item)
 		if cmp == 0 {
@@ -227,12 +231,15 @@ func (tr *SplayTree) Next(d *Node) *Node {
 func (tr *SplayTree) Prev(d *Node) *Node {
 	root := tr.root
 	var predecessor *Node
-	if d.left != nil {
-		predecessor = d.left
-		for predecessor.right != nil {
-			predecessor = predecessor.right
+
+	if d != nil {
+		if d.left != nil {
+			predecessor = d.left
+			for predecessor.right != nil {
+				predecessor = predecessor.right
+			}
+			return predecessor
 		}
-		return predecessor
 	}
 
 	for root != nil {
