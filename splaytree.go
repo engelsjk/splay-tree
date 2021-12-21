@@ -210,6 +210,9 @@ func (tr *SplayTree) MaxNode(t *Node) *Node {
 // func (tr *SplayTree) At() {}
 
 func (tr *SplayTree) Next(d *Node) *Node {
+	if d.item == nil { // empty nodes not allowed
+		return nil
+	}
 	root := tr.root
 	var successor *Node
 	if d.right != nil {
@@ -234,6 +237,9 @@ func (tr *SplayTree) Next(d *Node) *Node {
 }
 
 func (tr *SplayTree) Prev(d *Node) *Node {
+	if d.item == nil { // empty nodes not allowed
+		return nil
+	}
 	root := tr.root
 	var predecessor *Node
 	if d.left != nil {

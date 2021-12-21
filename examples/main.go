@@ -29,14 +29,21 @@ func main() {
 	t.Insert(&Item{0})
 	t.Insert(&Item{33})
 	t.Insert(&Item{2})
-	t.Insert(&Item{4})
-	t.Add(&Item{4})
-	t.Insert(&Item{4})
+	ni := t.Insert(&Item{4})
 	t.Add(&Item{10})
+
+	t.Find(&Item{4})
+	t.Remove(&Item{4})
 
 	for _, node := range t.Nodes() {
 		fmt.Printf("(%p) %+v: %+v\n", node, node, node.Item())
 	}
+
+	fmt.Printf("ni: (%p) %+v\n", ni, ni)
+	ni_next := t.Next(&splaytree.Node{})
+	fmt.Printf("n10_next: (%p) %+v\n", ni_next, ni_next)
+	ni_prev := t.Prev(ni)
+	fmt.Printf("n10_prev: (%p) %+v\n", ni_prev, ni_prev)
 
 	fmt.Printf("size: %d\n", t.Size())
 	fmt.Printf("min: %+v\n", t.Min())
