@@ -72,7 +72,7 @@ func (tr *SplayTree) remove(
 	}
 	t = splay(i, t, comparator)
 	cmp := comparator(i, t.item)
-	if cmp == 0 {
+	if cmp == 0 { // found it
 		if t.left == nil {
 			x = t.right
 		} else {
@@ -82,7 +82,7 @@ func (tr *SplayTree) remove(
 		tr.size--
 		return x
 	}
-	return t
+	return t // it wasn't there
 }
 
 // Pop removes and returns the node with smallest key
@@ -319,9 +319,9 @@ func splay(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
-	n := new(Node)
-	l := n
-	r := n
+	n := Node{}
+	l := &n
+	r := &n
 	for {
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
@@ -361,9 +361,7 @@ func splay(
 		}
 	}
 	// assemble
-	l.right = t.left
-	r.left = t.right
-	t.left = n.right
-	t.right = n.left
+	l.right, r.left = t.left, t.right
+	t.left, t.right = n.right, n.left
 	return t
 }
