@@ -140,7 +140,7 @@ func (tr *SplayTree) ForEach(visitor func(item interface{})) {
 			if len(Q) != 0 {
 				current = Q[len(Q)-1]
 				Q = Q[:len(Q)-1]
-				visitor(current.Item())
+				visitor(current)
 				current = current.right
 			} else {
 				done = true
@@ -155,10 +155,19 @@ func (tr *SplayTree) ForEach(visitor func(item interface{})) {
 func (tr *SplayTree) Items() []interface{} {
 	items := &[]interface{}{}
 	visitor := func(item interface{}) {
-		*items = append(*items, item)
+		*items = append(*items, item.(*Node).Item())
 	}
 	tr.ForEach(visitor)
 	return *items
+}
+
+func (tr *SplayTree) Nodes() []*Node {
+	nodes := &[]*Node{}
+	visitor := func(item interface{}) {
+		*nodes = append(*nodes, item.(*Node))
+	}
+	tr.ForEach(visitor)
+	return *nodes
 }
 
 // func (tr *SplayTree) Values() {}
