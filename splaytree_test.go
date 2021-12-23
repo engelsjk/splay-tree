@@ -129,3 +129,29 @@ func TestDuplicate(t *testing.T) {
 	tree.Add(1.0)
 	expect(t, tree.Size() == size)
 }
+
+func TestPrev(t *testing.T) {
+	tree := New(less)
+	values := []float64{2, 12, 1, -6, 4, -8}
+	for _, v := range values {
+		tree.Insert(v)
+	}
+
+	node := tree.Find(4.0)
+	prevNode := tree.Prev(node)
+
+	expect(t, prevNode.Item().(float64) == 2.0)
+}
+
+func TestNext(t *testing.T) {
+	tree := New(less)
+	values := []float64{2, 12, 1, -6, 4, -8}
+	for _, v := range values {
+		tree.Insert(v)
+	}
+
+	node := tree.Find(4.0)
+	prevNode := tree.Next(node)
+
+	expect(t, prevNode.Item().(float64) == 12.0)
+}
