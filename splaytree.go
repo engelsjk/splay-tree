@@ -14,6 +14,7 @@ type Node struct {
 	left, right *Node
 }
 
+// TODO: warning or return nil if less==nil?
 func New(less func(a, b interface{}) int) *SplayTree {
 	return &SplayTree{
 		comparator: less,
@@ -319,9 +320,9 @@ func splay(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
-	n := Node{}
-	l := &n
-	r := &n
+	n := &Node{}
+	l := n
+	r := n
 	for {
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
