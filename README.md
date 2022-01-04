@@ -4,7 +4,7 @@ A minimal Go port of the JavaScript [w8r/splay-tree](https://github.com/w8r/spla
 
 ## Implementation Status
 
-At the moment, this library is only intended to support the development of a pure Go implementation of the Martinez-Rueda-Feito polygon clipping algorithm, based on the JavaScript library [mfogel/polygon-clipping](https://github.com/mfogel/polygon-clipping). Therefore, it does not have full parity with [w8r/splay-tree](https://github.com/w8r/splay-tree) and for now only implements those methods used in [mfogel/polygon-clipping](https://github.com/mfogel/polygon-clipping).
+At the moment, this library is only intended to support the development of a pure Go implementation of the Martinez-Rueda-Feito polygon clipping algorithm (see [engelsjk/polygol](https://github.com/engelsjk/polygol)), based on the JavaScript library [mfogel/polygon-clipping](https://github.com/mfogel/polygon-clipping). Therefore, it does not have full parity with [w8r/splay-tree](https://github.com/w8r/splay-tree) and for now only implements those methods used in [mfogel/polygon-clipping](https://github.com/mfogel/polygon-clipping).
 
 ### Tree Methods
 
