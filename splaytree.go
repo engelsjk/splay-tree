@@ -104,12 +104,13 @@ func (tr *SplayTree) Pop() *Node {
 
 func (tr *SplayTree) Find(item interface{}) *Node {
 	fmt.Println("splaytree-find")
-	if tr.root != nil {
-		fmt.Printf("splaytree-find-root: %p\n", tr.root)
-		tr.root = splay(item, tr.root, tr.comparator)
-		if tr.comparator(item, tr.root.item) != 0 {
-			return nil
-		}
+	if tr.root == nil {
+		return nil
+	}
+	fmt.Printf("splaytree-find-root: %p\n", tr.root)
+	tr.root = splay(item, tr.root, tr.comparator)
+	if tr.comparator(item, tr.root.item) != 0 {
+		return nil
 	}
 	return tr.root
 }
