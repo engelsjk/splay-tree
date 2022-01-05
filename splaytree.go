@@ -38,7 +38,11 @@ func (tr *SplayTree) Add(item interface{}) *Node {
 		tr.size++
 		tr.root = n
 	}
-	t := splay(item, tr.root, tr.comparator)
+
+	// t := splay(item, tr.root, tr.comparator)
+	splay2(&tr.root, item, tr.comparator)
+	t := tr.root
+
 	cmp := tr.comparator(item, t.item)
 	if cmp == 0 {
 		tr.root = t
@@ -70,13 +74,20 @@ func (tr *SplayTree) remove(
 	if t == nil {
 		return nil
 	}
-	t = splay(i, t, comparator)
+
+	// t = splay(i, t, comparator)
+	splay2(&t, i, comparator)
+
 	cmp := comparator(i, t.item)
 	if cmp == 0 { // found it
 		if t.left == nil {
 			x = t.right
 		} else {
-			x = splay(i, t.left, comparator)
+
+			// x = splay(i, t.left, comparator)
+			splay2(&t.left, i, comparator)
+			x = tr.root
+
 			x.right = t.right
 		}
 		tr.size--
@@ -94,7 +105,10 @@ func (tr *SplayTree) Pop() *Node {
 	for n.left != nil {
 		n = n.left
 	}
-	tr.root = splay(n.item, tr.root, tr.comparator)
+
+	// tr.root = splay(n.item, tr.root, tr.comparator)
+	splay2(&tr.root, n.item, tr.comparator)
+
 	tr.root = tr.remove(n.item, tr.root, tr.comparator)
 	return n
 }
@@ -106,7 +120,10 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 	if tr.root == nil {
 		return tr.root
 	}
-	tr.root = splay(item, tr.root, tr.comparator)
+
+	// tr.root = splay(item, tr.root, tr.comparator)
+	splay2(&tr.root, item, tr.comparator)
+
 	if tr.comparator(item, tr.root.item) != 0 {
 		return nil
 	}
@@ -115,8 +132,9 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 
 func (tr *SplayTree) Contains(item interface{}) bool {
 	current := tr.root
+	compare := tr.comparator
 	for current != nil {
-		cmp := tr.comparator(item, current.Item())
+		cmp := compare(item, current.Item())
 		if cmp == 0 {
 			return true
 		} else if cmp < 0 {
@@ -289,9 +307,15 @@ func (tr *SplayTree) Size() int {
 // func (tr *SplayTree) Update() {}
 // func (tr *SplayTree) Split() {}
 
-func (tr *SplayTree) Print() {
+func (tr *SplayTree) PrintNodes() {
 	fmt.Println("------------------------------------------------")
-	stringify(tr.root, 0)
+	stringify(tr.root, 0, false)
+	fmt.Println("------------------------------------------------")
+}
+
+func (tr *SplayTree) PrintItems() {
+	fmt.Println("------------------------------------------------")
+	stringify(tr.root, 0, true)
 	fmt.Println("------------------------------------------------")
 }
 
@@ -312,7 +336,9 @@ func insert(
 		return node
 	}
 
-	t = splay(i, t, comparator)
+	// t = splay(i, t, comparator)
+	splay2(&t, i, comparator)
+
 	cmp := comparator(i, t.item)
 	if cmp < 0 {
 		node.left, node.right = t.left, t
@@ -325,18 +351,89 @@ func insert(
 }
 
 // Simple top down splay, not requiring i to be in the tree t.
+func splay2(
+	root **Node,
+	i interface{},
+	comparator func(a, b interface{}) int,
+) {
+	if (*root) == nil {
+		return
+	}
+
+	n := (*root)
+
+	cmp := comparator(i, n.item)
+	if cmp < 0 {
+		if n.left == nil {
+			return
+		}
+		n1 := n.left
+		cmp = comparator(i, n1.item)
+		if cmp > 0 && n1.right != nil {
+			splay2(&n1.right, i, comparator)
+			n2 := n1.right
+			n.left = n2.right
+			n2.right = n
+			n1.right = n2.left
+			n2.left = n1
+			(*root) = n2
+		} else if cmp < 0 && n1.left != nil {
+			splay2(&n1.left, i, comparator)
+			n2 := n1.left
+			n.left = n1.right
+			n1.right = n
+			n1.left = n2.right
+			n2.right = n1
+			(*root) = n2
+		} else {
+			(*root) = n1
+			n.left = n1.right
+			n1.right = n
+		}
+	} else if cmp > 0 {
+		if n.right == nil {
+			return
+		}
+		n1 := n.right
+		cmp = comparator(i, n1.item)
+		if cmp < 0 && n1.left != nil {
+			splay2(&n1.left, i, comparator)
+			n2 := n1.left
+			n.right = n2.left
+			n2.left = n
+			n1.left = n2.right
+			n2.right = n1
+			(*root) = n2
+		} else if cmp < 0 && n1.left != nil {
+			splay2(&n1.right, i, comparator)
+			n2 := n1.right
+			n.right = n1.left
+			n1.left = n
+			n1.right = n2.left
+			n2.left = n1
+			(*root) = n2
+		} else {
+			(*root) = n1
+			n.right = n1.left
+			n1.left = n
+		}
+	}
+
+}
+
 func splay(
 	i interface{},
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
-	if t == nil {
+	if t == nil || t.item == i {
 		return t
 	}
 
 	n := &Node{}
-	var y *Node
 	l, r := n, n
+	var y *Node
+
 	for {
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
@@ -345,19 +442,22 @@ func splay(
 			}
 			if comparator(i, t.left.item) < 0 {
 				y = t.left // rotate right
-				t.left, y.right, t = y.right, t, y
+				t.left, y.right = y.right, t
+				t = y
 				if t.left == nil {
 					break
 				}
 			}
-			r.left, r, t = t, t, t.left // link right
+			r.left = t // link right
+			r, t = t, t.left
 		} else if cmp > 0 {
 			if t.right == nil {
 				break
 			}
 			if comparator(i, t.right.item) > 0 {
 				y = t.right // rotate left
-				t.right, y.left, t = y.left, t, y
+				t.right, y.left = y.left, t
+				t = y
 				if t.right == nil {
 					break
 				}
@@ -375,7 +475,7 @@ func splay(
 }
 
 // internal recursive function to print a tree
-func stringify(n *Node, level int) {
+func stringify(n *Node, level int, items bool) {
 	if n != nil {
 		format := ""
 		for i := 0; i < level; i++ {
@@ -383,8 +483,12 @@ func stringify(n *Node, level int) {
 		}
 		format += "---[ "
 		level++
-		stringify(n.left, level)
-		fmt.Printf(format+"%p\n", n)
-		stringify(n.right, level)
+		stringify(n.left, level, items)
+		if items {
+			fmt.Printf(format+"%+v\n", n.item)
+		} else {
+			fmt.Printf(format+"%p\n", n)
+		}
+		stringify(n.right, level, items)
 	}
 }
