@@ -335,6 +335,7 @@ func splay(
 	}
 
 	n := &Node{}
+	var y *Node
 	l, r := n, n
 	for {
 		cmp := comparator(i, t.item)
@@ -343,7 +344,7 @@ func splay(
 				break
 			}
 			if comparator(i, t.left.item) < 0 {
-				y := t.left // rotate right
+				y = t.left // rotate right
 				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
 					break
@@ -355,7 +356,7 @@ func splay(
 				break
 			}
 			if comparator(i, t.right.item) > 0 {
-				y := t.right // rotate left
+				y = t.right // rotate left
 				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
 					break
