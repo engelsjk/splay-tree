@@ -34,8 +34,7 @@ func (tr *SplayTree) Insert(item interface{}) *Node {
 func (tr *SplayTree) Add(item interface{}) *Node {
 	n := &Node{item: item}
 	if tr.root == nil {
-		n.left = nil
-		n.right = nil
+		n.left, n.right = nil, nil
 		tr.size++
 		tr.root = n
 	}
@@ -45,12 +44,10 @@ func (tr *SplayTree) Add(item interface{}) *Node {
 		tr.root = t
 	} else {
 		if cmp < 0 {
-			n.left = t.left
-			n.right = t
+			n.left, n.right = t.left, t
 			t.left = nil
 		} else if cmp > 0 {
-			n.right = t.right
-			n.left = t
+			n.right, n.left = t.right, t
 			t.right = nil
 		}
 		tr.size++
@@ -338,6 +335,7 @@ func splay(
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
 			if t.left == nil {
+				fmt.Println("splaytree-splay-no-left")
 				break
 			}
 			fmt.Println("splaytree-splay-comparator-2")
@@ -346,6 +344,7 @@ func splay(
 				y := t.left // rotate right
 				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
+					fmt.Println("splaytree-splay-no-left")
 					break
 				}
 			}
@@ -353,6 +352,7 @@ func splay(
 			r.left, r, t = t, t, t.left // link right
 		} else if cmp > 0 {
 			if t.right == nil {
+				fmt.Println("splaytree-splay-no-right")
 				break
 			}
 			fmt.Println("splaytree-splay-comparator-3")
@@ -361,6 +361,7 @@ func splay(
 				y := t.right // rotate left
 				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
+					fmt.Println("splaytree-splay-no-right")
 					break
 				}
 			}
