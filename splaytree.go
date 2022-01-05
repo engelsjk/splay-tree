@@ -1,5 +1,7 @@
 package splaytree
 
+import "fmt"
+
 // Follows "An implementation of top-down splaying"
 // by D. Sleator <sleator@cs.cmu.edu> March 1992
 
@@ -104,6 +106,7 @@ func (tr *SplayTree) Pop() *Node {
 // func (tr *SplayTree) FindStatic() {}
 
 func (tr *SplayTree) Find(item interface{}) *Node {
+	fmt.Println("splaytree-find")
 	if tr.root != nil {
 		tr.root = splay(item, tr.root, tr.comparator)
 		if tr.comparator(item, tr.root.item) != 0 {
@@ -114,6 +117,7 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 }
 
 func (tr *SplayTree) Contains(item interface{}) bool {
+	fmt.Println("splaytree-contains")
 	current := tr.root
 	for current != nil {
 		cmp := tr.comparator(item, current.Item())
@@ -327,14 +331,17 @@ func splay(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
+	fmt.Println("splaytree-splay")
 	n := &Node{}
 	l, r := n, n
 	for {
+		fmt.Println("splaytree-splay-comparator-1")
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
 			if t.left == nil {
 				break
 			}
+			fmt.Println("splaytree-splay-comparator-2")
 			if comparator(i, t.left.item) < 0 {
 				y := t.left // rotate right
 				t.left, y.right, t = y.right, t, y
@@ -347,6 +354,7 @@ func splay(
 			if t.right == nil {
 				break
 			}
+			fmt.Println("splaytree-splay-comparator-3")
 			if comparator(i, t.right.item) > 0 {
 				y := t.right // rotate left
 				t.right, y.left, t = y.left, t, y
