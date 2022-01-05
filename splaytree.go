@@ -343,12 +343,14 @@ func splay(
 			}
 			fmt.Println("splaytree-splay-comparator-2")
 			if comparator(i, t.left.item) < 0 {
+				fmt.Println("splaytree-splay-rotate-right")
 				y := t.left // rotate right
 				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
 					break
 				}
 			}
+			fmt.Println("splaytree-splay-link-right")
 			r.left, r, t = t, t, t.left // link right
 		} else if cmp > 0 {
 			if t.right == nil {
@@ -356,18 +358,21 @@ func splay(
 			}
 			fmt.Println("splaytree-splay-comparator-3")
 			if comparator(i, t.right.item) > 0 {
+				fmt.Println("splaytree-splay-rotate-left")
 				y := t.right // rotate left
 				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
 					break
 				}
 			}
+			fmt.Println("splaytree-splay-link-left")
 			l.right = t // link left
 			l, t = t, t.right
 		} else {
 			break
 		}
 	}
+	fmt.Println("splaytree-splay-assemble")
 	// assemble
 	l.right, r.left = t.left, t.right
 	t.left, t.right = n.right, n.left
