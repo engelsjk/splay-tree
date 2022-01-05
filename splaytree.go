@@ -108,6 +108,7 @@ func (tr *SplayTree) Pop() *Node {
 func (tr *SplayTree) Find(item interface{}) *Node {
 	fmt.Println("splaytree-find")
 	if tr.root != nil {
+		fmt.Printf("splaytree-find-root: %p\n", tr.root)
 		tr.root = splay(item, tr.root, tr.comparator)
 		if tr.comparator(item, tr.root.item) != 0 {
 			return nil
@@ -314,12 +315,10 @@ func insert(
 	t = splay(i, t, comparator)
 	cmp := comparator(i, t.item)
 	if cmp < 0 {
-		node.left = t.left
-		node.right = t
+		node.left, node.right = t.left, t
 		t.left = nil
 	} else if cmp >= 0 {
-		node.right = t.right
-		node.left = t
+		node.right, node.left = t.right, t
 		t.right = nil
 	}
 	return node
