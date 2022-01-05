@@ -103,11 +103,11 @@ func (tr *SplayTree) Pop() *Node {
 // func (tr *SplayTree) FindStatic() {}
 
 func (tr *SplayTree) Find(item interface{}) *Node {
-	fmt.Println("splaytree-find")
+	// fmt.Println("splaytree-find")
 	if tr.root == nil {
 		return nil
 	}
-	fmt.Printf("splaytree-find-root: %p\n", tr.root)
+	// fmt.Printf("splaytree-find-root: %p\n", tr.root)
 	tr.root = splay(item, tr.root, tr.comparator)
 	if tr.comparator(item, tr.root.item) != 0 {
 		return nil
@@ -293,25 +293,10 @@ func (tr *SplayTree) Size() int {
 // func (tr *SplayTree) Update() {}
 // func (tr *SplayTree) Split() {}
 
-func (tr *SplayTree) String() {
+func (tr *SplayTree) Print() {
 	fmt.Println("------------------------------------------------")
 	stringify(tr.root, 0)
 	fmt.Println("------------------------------------------------")
-}
-
-// internal recursive function to print a tree
-func stringify(n *Node, level int) {
-	if n != nil {
-		format := ""
-		for i := 0; i < level; i++ {
-			format += "       "
-		}
-		format += "---[ "
-		level++
-		stringify(n.left, level)
-		fmt.Printf(format+"%p\n", n)
-		stringify(n.right, level)
-	}
 }
 
 func (n *Node) Item() interface{} {
@@ -349,54 +334,69 @@ func splay(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
-	fmt.Println("splaytree-splay")
+	// fmt.Println("splaytree-splay")
 	n := &Node{}
 	l, r := n, n
 	for {
-		fmt.Println("splaytree-splay-comparator-1")
+		// fmt.Println("splaytree-splay-comparator-1")
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
 			if t.left == nil {
-				fmt.Println("splaytree-splay-no-left")
+				// fmt.Println("splaytree-splay-no-left")
 				break
 			}
-			fmt.Println("splaytree-splay-comparator-2")
+			// fmt.Println("splaytree-splay-comparator-2")
 			if comparator(i, t.left.item) < 0 {
-				fmt.Println("splaytree-splay-rotate-right")
+				// fmt.Println("splaytree-splay-rotate-right")
 				y := t.left // rotate right
 				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
-					fmt.Println("splaytree-splay-no-left")
+					// fmt.Println("splaytree-splay-no-left")
 					break
 				}
 			}
-			fmt.Println("splaytree-splay-link-right")
+			// fmt.Println("splaytree-splay-link-right")
 			r.left, r, t = t, t, t.left // link right
 		} else if cmp > 0 {
 			if t.right == nil {
-				fmt.Println("splaytree-splay-no-right")
+				// fmt.Println("splaytree-splay-no-right")
 				break
 			}
-			fmt.Println("splaytree-splay-comparator-3")
+			// fmt.Println("splaytree-splay-comparator-3")
 			if comparator(i, t.right.item) > 0 {
-				fmt.Println("splaytree-splay-rotate-left")
+				// fmt.Println("splaytree-splay-rotate-left")
 				y := t.right // rotate left
 				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
-					fmt.Println("splaytree-splay-no-right")
+					// fmt.Println("splaytree-splay-no-right")
 					break
 				}
 			}
-			fmt.Println("splaytree-splay-link-left")
+			// fmt.Println("splaytree-splay-link-left")
 			l.right = t // link left
 			l, t = t, t.right
 		} else {
 			break
 		}
 	}
-	fmt.Println("splaytree-splay-assemble")
+	// fmt.Println("splaytree-splay-assemble")
 	// assemble
 	l.right, r.left = t.left, t.right
 	t.left, t.right = n.right, n.left
 	return t
+}
+
+// internal recursive function to print a tree
+func stringify(n *Node, level int) {
+	if n != nil {
+		format := ""
+		for i := 0; i < level; i++ {
+			format += "       "
+		}
+		format += "---[ "
+		level++
+		stringify(n.left, level)
+		fmt.Printf(format+"%p\n", n)
+		stringify(n.right, level)
+	}
 }
