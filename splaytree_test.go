@@ -155,3 +155,12 @@ func TestNext(t *testing.T) {
 
 	expect(t, prevNode.Item().(float64) == 12.0)
 }
+
+func TestStringify(t *testing.T) {
+	tree := New(less)
+	values := []float64{2, 12, 1, -6, 4, -8}
+	for _, v := range values {
+		tree.Insert(v)
+	}
+	tree.String()
+}

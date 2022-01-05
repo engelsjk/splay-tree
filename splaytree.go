@@ -293,6 +293,27 @@ func (tr *SplayTree) Size() int {
 // func (tr *SplayTree) Update() {}
 // func (tr *SplayTree) Split() {}
 
+func (tr *SplayTree) String() {
+	fmt.Println("------------------------------------------------")
+	stringify(tr.root, 0)
+	fmt.Println("------------------------------------------------")
+}
+
+// internal recursive function to print a tree
+func stringify(n *Node, level int) {
+	if n != nil {
+		format := ""
+		for i := 0; i < level; i++ {
+			format += "       "
+		}
+		format += "---[ "
+		level++
+		stringify(n.left, level)
+		fmt.Printf(format+"%p\n", n)
+		stringify(n.right, level)
+	}
+}
+
 func (n *Node) Item() interface{} {
 	return n.item
 }
