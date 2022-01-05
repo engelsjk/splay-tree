@@ -321,8 +321,7 @@ func splay(
 	comparator func(a, b interface{}) int,
 ) *Node {
 	n := &Node{}
-	l := n
-	r := n
+	l, r := n, n
 	for {
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
@@ -331,32 +330,25 @@ func splay(
 			}
 			if comparator(i, t.left.item) < 0 {
 				y := t.left // rotate right
-				t.left = y.right
-				y.right = t
-				t = y
+				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
 					break
 				}
 			}
-			r.left = t // link right
-			r = t
-			t = t.left
+			r.left, r, t = t, t, t.left // link right
 		} else if cmp > 0 {
 			if t.right == nil {
 				break
 			}
 			if comparator(i, t.right.item) > 0 {
 				y := t.right // rotate left
-				t.right = y.left
-				y.left = t
-				t = y
+				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
 					break
 				}
 			}
 			l.right = t // link left
-			l = t
-			t = t.right
+			l, t = t, t.right
 		} else {
 			break
 		}
