@@ -103,11 +103,9 @@ func (tr *SplayTree) Pop() *Node {
 // func (tr *SplayTree) FindStatic() {}
 
 func (tr *SplayTree) Find(item interface{}) *Node {
-	// fmt.Println("splaytree-find")
 	if tr.root == nil {
-		return nil
+		return tr.root
 	}
-	// fmt.Printf("splaytree-find-root: %p\n", tr.root)
 	tr.root = splay(item, tr.root, tr.comparator)
 	if tr.comparator(item, tr.root.item) != 0 {
 		return nil
@@ -116,7 +114,6 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 }
 
 func (tr *SplayTree) Contains(item interface{}) bool {
-	fmt.Println("splaytree-contains")
 	current := tr.root
 	for current != nil {
 		cmp := tr.comparator(item, current.Item())
@@ -214,20 +211,18 @@ func (tr *SplayTree) MaxNode(t *Node) *Node {
 // func (tr *SplayTree) At() {}
 
 func (tr *SplayTree) Next(d *Node) *Node {
-	if d.item == nil { // empty nodes not allowed
+	if d == nil { // empty nodes not allowed
 		return nil
 	}
 	root := tr.root
 	var successor *Node
 
-	if d != nil {
-		if d.right != nil {
-			successor = d.right
-			for successor.left != nil {
-				successor = successor.left
-			}
-			return successor
+	if d.right != nil {
+		successor = d.right
+		for successor.left != nil {
+			successor = successor.left
 		}
+		return successor
 	}
 
 	for root != nil {
@@ -235,8 +230,7 @@ func (tr *SplayTree) Next(d *Node) *Node {
 		if cmp == 0 {
 			break
 		} else if cmp < 0 {
-			successor = root
-			root = root.left
+			successor, root = root, root.left
 		} else {
 			root = root.right
 		}
@@ -245,20 +239,18 @@ func (tr *SplayTree) Next(d *Node) *Node {
 }
 
 func (tr *SplayTree) Prev(d *Node) *Node {
-	if d.item == nil { // empty nodes not allowed
+	if d == nil { // empty nodes not allowed
 		return nil
 	}
 	root := tr.root
 	var predecessor *Node
 
-	if d != nil {
-		if d.left != nil {
-			predecessor = d.left
-			for predecessor.right != nil {
-				predecessor = predecessor.right
-			}
-			return predecessor
+	if d.left != nil {
+		predecessor = d.left
+		for predecessor.right != nil {
+			predecessor = predecessor.right
 		}
+		return predecessor
 	}
 
 	for root != nil {
@@ -268,14 +260,18 @@ func (tr *SplayTree) Prev(d *Node) *Node {
 		} else if cmp < 0 {
 			root = root.left
 		} else {
-			predecessor = root
-			root = root.right
+			predecessor, root = root, root.right
 		}
 	}
 	return predecessor
 }
 
-// func (tr *SplayTree) Clear() {}
+func (tr *SplayTree) Clear() *SplayTree {
+	tr.root = nil
+	tr.size = 0
+	return tr
+}
+
 // func (tr *SplayTree) ToList() {}
 // func (tr *SplayTree) Load() {}
 
@@ -334,52 +330,43 @@ func splay(
 	t *Node,
 	comparator func(a, b interface{}) int,
 ) *Node {
-	// fmt.Println("splaytree-splay")
+	if t == nil {
+		return t
+	}
+
 	n := &Node{}
 	l, r := n, n
 	for {
-		// fmt.Println("splaytree-splay-comparator-1")
 		cmp := comparator(i, t.item)
 		if cmp < 0 {
 			if t.left == nil {
-				// fmt.Println("splaytree-splay-no-left")
 				break
 			}
-			// fmt.Println("splaytree-splay-comparator-2")
 			if comparator(i, t.left.item) < 0 {
-				// fmt.Println("splaytree-splay-rotate-right")
 				y := t.left // rotate right
 				t.left, y.right, t = y.right, t, y
 				if t.left == nil {
-					// fmt.Println("splaytree-splay-no-left")
 					break
 				}
 			}
-			// fmt.Println("splaytree-splay-link-right")
 			r.left, r, t = t, t, t.left // link right
 		} else if cmp > 0 {
 			if t.right == nil {
-				// fmt.Println("splaytree-splay-no-right")
 				break
 			}
-			// fmt.Println("splaytree-splay-comparator-3")
 			if comparator(i, t.right.item) > 0 {
-				// fmt.Println("splaytree-splay-rotate-left")
 				y := t.right // rotate left
 				t.right, y.left, t = y.left, t, y
 				if t.right == nil {
-					// fmt.Println("splaytree-splay-no-right")
 					break
 				}
 			}
-			// fmt.Println("splaytree-splay-link-left")
 			l.right = t // link left
 			l, t = t, t.right
 		} else {
 			break
 		}
 	}
-	// fmt.Println("splaytree-splay-assemble")
 	// assemble
 	l.right, r.left = t.left, t.right
 	t.left, t.right = n.right, n.left
