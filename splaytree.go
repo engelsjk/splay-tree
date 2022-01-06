@@ -39,9 +39,7 @@ func (tr *SplayTree) Add(item interface{}) *Node {
 		tr.root = n
 	}
 
-	// t := splay(item, tr.root, tr.comparator)
-	splay2(&tr.root, item, tr.comparator)
-	t := tr.root
+	t := splay(item, tr.root, tr.comparator)
 
 	cmp := tr.comparator(item, t.item)
 	if cmp == 0 {
@@ -75,8 +73,7 @@ func (tr *SplayTree) remove(
 		return nil
 	}
 
-	// t = splay(i, t, comparator)
-	splay2(&t, i, comparator)
+	t = splay(i, t, comparator)
 
 	cmp := comparator(i, t.item)
 	if cmp == 0 { // found it
@@ -84,9 +81,7 @@ func (tr *SplayTree) remove(
 			x = t.right
 		} else {
 
-			// x = splay(i, t.left, comparator)
-			splay2(&t.left, i, comparator)
-			x = tr.root
+			x = splay(i, t.left, comparator)
 
 			x.right = t.right
 		}
@@ -106,8 +101,7 @@ func (tr *SplayTree) Pop() *Node {
 		n = n.left
 	}
 
-	// tr.root = splay(n.item, tr.root, tr.comparator)
-	splay2(&tr.root, n.item, tr.comparator)
+	tr.root = splay(n.item, tr.root, tr.comparator)
 
 	tr.root = tr.remove(n.item, tr.root, tr.comparator)
 	return n
@@ -121,8 +115,7 @@ func (tr *SplayTree) Find(item interface{}) *Node {
 		return tr.root
 	}
 
-	// tr.root = splay(item, tr.root, tr.comparator)
-	splay2(&tr.root, item, tr.comparator)
+	tr.root = splay(item, tr.root, tr.comparator)
 
 	if tr.comparator(item, tr.root.item) != 0 {
 		return nil
@@ -336,8 +329,7 @@ func insert(
 		return node
 	}
 
-	// t = splay(i, t, comparator)
-	splay2(&t, i, comparator)
+	t = splay(i, t, comparator)
 
 	cmp := comparator(i, t.item)
 	if cmp < 0 {
